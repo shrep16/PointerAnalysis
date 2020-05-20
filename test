@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#set -x
+export LLVM_HOME=usr/lib/llvm-9
+clang++-9 -S -emit-llvm preronaTest/test5.cpp #generates LLVM-IR in a text file (.ll)
+opt-9 -S -instnamer test.ll -o test.ll
+mkdir -p _build
+pushd _build
+cmake ..
+make
+popd
+clang++-9 -S -emit-llvm preronaTest/test5.cpp -o test.bc
+opt-9 -instnamer -load _build/*/*prerona* -pointer test.bc > /dev/null
+#~/llvm-toolchain-8_8~svn353031/build-llvm/bin/opt -debug -instnamer -load _build/*/*SLVA* -slva test.bc > /dev/null
+#rm -rf _build test.bc
+
+
